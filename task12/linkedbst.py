@@ -3,7 +3,6 @@ Laboratory 13.1
 """
 
 from math import log
-import sys
 from time import time
 from random import choice, randint
 from abstractcollection import AbstractCollection
@@ -27,7 +26,7 @@ class LinkedBST(AbstractCollection):
 
         def recurse(node, level):
             str_out = ""
-            if node != None:
+            if node is not None:
                 str_out += recurse(node.right, level + 1)
                 str_out += "| " * level
                 str_out += str(node.data) + "\n"
@@ -44,9 +43,9 @@ class LinkedBST(AbstractCollection):
             while not stack.isEmpty():
                 node = stack.pop()
                 yield node.data
-                if node.right != None:
+                if node.right is not None:
                     stack.push(node.right)
-                if node.left != None:
+                if node.left is not None:
                     stack.push(node.left)
 
     def preorder(self):
@@ -58,7 +57,7 @@ class LinkedBST(AbstractCollection):
         lyst = list()
 
         def recurse(node):
-            if node != None:
+            if node is not None:
                 recurse(node.left)
                 lyst.append(node.data)
                 recurse(node.right)
@@ -76,7 +75,7 @@ class LinkedBST(AbstractCollection):
 
     def __contains__(self, item):
         """Returns True if target is found or False otherwise."""
-        return self.find(item) != None
+        return self.find(item) is not None
 
     def find(self, item):
         """If item matches an item in self, returns the
@@ -143,7 +142,7 @@ class LinkedBST(AbstractCollection):
             # Post: top.data = maximum value in top's left subtree
             parent = top
             current_node = top.left
-            while not current_node.right == None:
+            while not current_node.right is None:
                 parent = current_node
                 current_node = current_node.right
             top.data = current_node.data
@@ -163,7 +162,7 @@ class LinkedBST(AbstractCollection):
         parent = pre_root
         direction = "L"
         current_node = self._root
-        while not current_node == None:
+        while not current_node is None:
             if current_node.data == item:
                 item_removed = current_node.data
                 break
@@ -176,7 +175,7 @@ class LinkedBST(AbstractCollection):
                 current_node = current_node.right
 
         # Return None if the item is absent
-        if item_removed == None:
+        if item_removed is None:
             return None
 
         # The item is present, so remove its node
@@ -185,12 +184,12 @@ class LinkedBST(AbstractCollection):
         #         Replace the node's value with the maximum value in the
         #         left subtree
         #         Delete the maximium node in the left subtree
-        if not current_node.left == None and not current_node.right == None:
+        if not current_node.left is None and not current_node.right is None:
             lift_max_inleft_subtree_totop(current_node)
         else:
 
             # Case 2: The node has no left child
-            if current_node.left == None:
+            if current_node.left is None:
                 new_child = current_node.right
 
                 # Case 3: The node has no right child
@@ -326,13 +325,27 @@ class LinkedBST(AbstractCollection):
         elements.pop(0)
         ptr = self._root
         for element in elements:
-            if element < ptr.data:
+            if element.lower() < ptr.data.lower():
                 ptr.left = BSTNode(element)
                 ptr = ptr.left
             else:
                 ptr.right = BSTNode(element)
                 ptr = ptr.right
             self._size += 1
+
+    def custom_search(self, value):
+        """
+        Loop-based binary tree serach.
+        """
+        ptr = self._root
+        while ptr is not None:
+            if value == ptr.data:
+                return True
+            if value < ptr.data:
+                ptr = ptr.left
+            else:
+                ptr = ptr.right
+        return False
 
     @classmethod
     def demo_bst(cls, path):
@@ -364,10 +377,11 @@ class LinkedBST(AbstractCollection):
         # 2ND TEST
         tree = cls()
         tree.custom_add(words_lst)
+        print("Tree created")
 
         start = time()
         for word in random_words:
-            word in tree
+            tree.custom_search(word)
         finish = time()
         print(
             "Binary tree search based on sorted dictionary: {} sec.".format(
@@ -382,6 +396,7 @@ class LinkedBST(AbstractCollection):
             rword = words_lst.pop(randint(0, length - 1))
             length -= 1
             tree.add(rword)
+        print("Tree recreated")
 
         start = time()
         for word in random_words:
